@@ -555,6 +555,15 @@ namespace C2S {
 		int action_bin;
 	};
 
+	class CUTimePacket : public C2SPacker {
+	public:
+		SyncEventPacket(int _event_id, int _action_bin) : C2SPacket("cut"),
+			time(_time) {}
+		std::string ToBytes() const override { return Build(time); }
+	protected:
+		int _time;
+	};
+
 }
 }
 

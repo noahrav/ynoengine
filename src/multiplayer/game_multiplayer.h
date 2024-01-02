@@ -73,7 +73,14 @@ public:
 
 	enum GlobalVariables {
 		NB_PLAYERS = 1232
+		CU_HOURS = 1233
+		CU_DAYS = 1234
 	};
+
+	enum CUTimeFormat {
+		HOURS = 20
+		DAYS = 12
+	}:
 
 	NametagMode GetNametagMode() { return nametag_mode; }
 	void SetNametagMode(int mode) {
@@ -95,6 +102,9 @@ public:
 	int last_flash_frame_index{-1};
 	std::unique_ptr<std::array<int, 5>> last_frame_flash;
 	std::map<int, std::array<int, 5>> repeating_flashes;
+
+	int cu_time_days;
+	int cu_time_hours;
 
 	void SpawnOtherPlayer(int id);
 	void ResetRepeatingFlash();
