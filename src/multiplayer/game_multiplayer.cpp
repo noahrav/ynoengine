@@ -233,6 +233,9 @@ void Game_Multiplayer::InitConnection() {
 			return;
 		if (players.find(p.id) == players.end()) SpawnOtherPlayer(p.id);
 		players[p.id].account = p.account_bin == 1;
+
+		UpdateNBPlayers();
+
 		Web_API::SyncPlayerData(p.uuid, p.rank, p.account_bin, p.badge, p.medals, p.id);
 	});
 	connection.RegisterHandler<DisconnectPacket>("d", [this] (DisconnectPacket& p) {
@@ -256,6 +259,8 @@ void Game_Multiplayer::InitConnection() {
 		if (Main_Data::game_pictures) {
 			Main_Data::game_pictures->EraseAllMultiplayerForPlayer(p.id);
 		}
+
+		UpdateNBPlayers();
 
 		Web_API::OnPlayerDisconnect(p.id);
 	});
@@ -755,8 +760,12 @@ void Game_Multiplayer::ApplyScreenTone() {
 	ApplyTone(Main_Data::game_screen->GetTone());
 }
 
-void Game_Multiplayer::UpdateGlobalVariables() {
+void UpdateNBPlayers() {
 	Main_Data::game_variables->Set(GlobalVariables::NB_PLAYERS, players.size() + 1);
+}
+
+void Game_Multiplayer::UpdateGlobalVariables() {
+	UpdateNBPlayers();
 }
 
 void Game_Multiplayer::Update() {
