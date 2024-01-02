@@ -70,6 +70,7 @@ Follow these steps:
     - unzip
     - curl
     - pkg-config
+    - ccache
 
 2) Set up emscripten toolchain
 
