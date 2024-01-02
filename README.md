@@ -67,6 +67,9 @@ Follow these steps:
     - autoconf
     - libtool
     - m4
+    - unzip
+    - curl
+    - pkg-config
 
 2) Set up emscripten toolchain
 
