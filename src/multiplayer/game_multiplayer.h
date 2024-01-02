@@ -46,6 +46,7 @@ public:
 	void ApplyScreenTone();
 	void SwitchSet(int switch_id, int value);
 	void VariableSet(int var_id, int value);
+    void UpdateNBPlayers();
 	void UpdateGlobalVariables();
 
 	struct {

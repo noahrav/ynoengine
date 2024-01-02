@@ -345,7 +345,7 @@ void Game_Multiplayer::InitConnection() {
 
 			int rx;
 			int ry;
-			
+
 			if (Game_Map::LoopHorizontal() && px - ox >= hmw) {
 				rx = Game_Map::GetTilesX() - (px - ox);
 			} else if (Game_Map::LoopHorizontal() && px - ox < hmw * -1) {
@@ -443,8 +443,8 @@ using namespace Messages::C2S;
 
 int* GetPlayerCoords() {
 		auto& player = *Main_Data::game_player;
-	
-	int* coords = new int[2]; 
+
+	int* coords = new int[2];
 	coords[0] = player.GetX();
 	coords[1] = player.GetY();
 
@@ -760,7 +760,7 @@ void Game_Multiplayer::ApplyScreenTone() {
 	ApplyTone(Main_Data::game_screen->GetTone());
 }
 
-void UpdateNBPlayers() {
+void Game_Multiplayer::UpdateNBPlayers() {
 	Main_Data::game_variables->Set(GlobalVariables::NB_PLAYERS, players.size() + 1);
 }
 
@@ -873,7 +873,7 @@ void Game_Multiplayer::Update() {
 
 		auto old_list = &DrawableMgr::GetLocalList();
 		DrawableMgr::SetLocalList(&scene_map->GetDrawableList());
-		
+
 		for (auto dcpi = dc_players.rbegin(); dcpi != dc_players.rend(); ++dcpi) {
 			auto& ch = dcpi->ch;
 			if (ch->GetBaseOpacity() > 0) {
