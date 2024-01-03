@@ -47,6 +47,7 @@ public:
 	void SwitchSet(int switch_id, int value);
 	void VariableSet(int var_id, int value);
     void UpdateNBPlayers();
+    void UpdateCUTime();
 	void UpdateGlobalVariables();
 
 	struct {

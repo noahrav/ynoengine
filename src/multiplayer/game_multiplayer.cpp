@@ -440,7 +440,12 @@ void Game_Multiplayer::InitConnection() {
 		if (raw_time > 0 && raw_time < CUTimeFormat.HOURS * CUTimeFormat.DAYS) {
 			cu_time_hours = raw_time % CUTimeFormat.HOURS;
 			cu_time_days = raw_time / CUTimeFormat.DAYS;
-		}
+		} else {
+            cu_time_hours = 0;
+            cu_time_days = 0;
+        }
+
+        UpdateCUTime();
 	});
 }
 
@@ -769,13 +774,16 @@ void Game_Multiplayer::ApplyScreenTone() {
 
 void Game_Multiplayer::UpdateNBPlayers() {
 	Main_Data::game_variables->Set(GlobalVariables::NB_PLAYERS, players.size() + 1);
+}
 
-	Main_Data::game_variables->Set(GlobalVariables::CU_HOURS, cu_time_hours);
-	Main_Data::game_variables->Set(GlobalVariables::CU_DAYS, cu_time_days);
+void Game_Multiplayer::UpdateCUTime() {
+    Main_Data::game_variables->Set(GlobalVariables::CU_HOURS, cu_time_hours);
+    Main_Data::game_variables->Set(GlobalVariables::CU_DAYS, cu_time_days);
 }
 
 void Game_Multiplayer::UpdateGlobalVariables() {
 	UpdateNBPlayers();
+    UpdateCUTime();
 }
 
 void Game_Multiplayer::Update() {
