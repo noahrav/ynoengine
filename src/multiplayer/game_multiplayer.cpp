@@ -517,6 +517,7 @@ void Game_Multiplayer::Connect(int map_id, bool room_switch) {
 		Web_API::UpdateConnectionStatus(2); // connecting
 		connection.Open(get_room_url(room_id, session_token));
 	}
+	UpdateGlobalVariables();
 }
 
 void Game_Multiplayer::Initialize() {
@@ -537,6 +538,7 @@ void Game_Multiplayer::Quit() {
 	Web_API::UpdateConnectionStatus(0); // disconnected
 	connection.Close();
 	Initialize();
+	UpdateGlobalVariables();
 }
 
 void Game_Multiplayer::SendBasicData() {
