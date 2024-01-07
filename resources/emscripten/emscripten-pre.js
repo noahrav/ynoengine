@@ -1,6 +1,6 @@
 // Note: The `Module` context is already initialized as an
 // empty object by emscripten even before the pre script
-Object.assign(Module, {
+Module = { ...Module,
   preRun: [onPreRun],
   postRun: [],
 
@@ -44,7 +44,7 @@ Object.assign(Module, {
     Module.totalDependencies = Math.max(Module.totalDependencies, left);
     Module.setStatus(left ? `Preparing... (${Module.totalDependencies - left}/${Module.totalDependencies})` : 'Downloading game data...');
   }
-});
+};
 
 var game_pushed = false;
 var lang_pushed = false;
