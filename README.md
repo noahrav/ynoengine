@@ -69,10 +69,6 @@ Follow these steps:
     - autoconf
     - libtool
     - m4
-    - unzip
-    - curl
-    - pkg-config
-    - ccache
 
 2) Set up emscripten toolchain
 
@@ -83,12 +79,23 @@ cd workdir
 git clone https://github.com/EasyRPG/buildscripts
 cd buildscripts
 cd emscripten
-USE_WASM_SIMD=1 BUILD_LIBLCF=1 ./0_build_everything.sh
+./0_build_everything.sh
 cd emsdk-portable
 source ./emsdk_env.sh
 ```
 
-3) Build ynoclient
+3) Build liblcf
+```
+cd ~/workdir
+git clone https://github.com/EasyRPG/liblcf
+cd liblcf
+export EM_PKG_CONFIG_PATH=$HOME/workdir/buildscripts/emscripten/lib/pkgconfig
+autoreconf -fi
+emconfigure ./configure --prefix=$HOME/workdir/buildscripts/emscripten --disable-shared
+make install
+```
+
+4) Build ynoclient
 ```
 cd ~/workdir
 git clone https://github.com/ynoproject/ynoclient
@@ -98,7 +105,7 @@ cd build
 ninja
 ```
 
-The files you want are build/ynoengine-simd.wasm and build/ynoengine-simd.js. To test your changes locally, connect to any game in YNO and use a file replacer to replace those in your browser.
+The files you want are build/index.wasm and build/index.js
 
 ## Source files of interest
 Check the [initial commit.](https://github.com/ynoproject/ynoclient/commit/218c56586b598a9e3889ed74cd606ed699d159ca)
