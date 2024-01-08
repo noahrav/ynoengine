@@ -1,7 +1,6 @@
 // Note: The `Module` context is already initialized as an
 // empty object by emscripten even before the pre script
-Object.AudioProcessingEvent(Module, {
-  ...Module,
+Object.assign(Module, {
   preRun: [onPreRun],
   postRun: [],
 
