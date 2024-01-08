@@ -18,6 +18,9 @@
 #ifndef EP_EMSCRIPTEN_INTERFACE_H
 #define EP_EMSCRIPTEN_INTERFACE_H
 
+#include <string>
+#include <array>
+
 class Emscripten_Interface {
 public:
 	static bool DownloadSavegame(int slot);
@@ -25,6 +28,16 @@ public:
 	static void RefreshScene();
 	static void TakeScreenshot();
 	static void Reset();
+
+	static std::array<int, 2> GetPlayerCoords();
+	static void SetLanguage(std::string lang);
+	static void SessionReady();
+	static void TogglePlayerSounds();
+	static void ToggleMute();
+	static void SetSoundVolume(int volume);
+	static void SetMusicVolume(int volume);
+	static void SetNametagMode(int mode);
+	static void SetSessionToken(std::string t);
 };
 
 class Emscripten_Interface_Private {

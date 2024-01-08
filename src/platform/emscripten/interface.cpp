@@ -28,6 +28,12 @@
 #include "scene_save.h"
 #include "output.h"
 
+#include <string>
+#include "../../multiplayer/game_multiplayer.h"
+#include "../../game_player.h"
+#include "../../audio.h"
+#include "../../web_api.h"
+
 void Emscripten_Interface::Reset() {
 	Player::reset_flag = true;
 }
@@ -91,6 +97,60 @@ bool Emscripten_Interface_Private::UploadSavegameStep2(int slot, int buffer_addr
 	return true;
 }
 
+// YNOproject
+
+std::array<int, 2> Emscripten_Interface::GetPlayerCoords() {
+	auto& player = *Main_Data::game_player;
+
+	int x = player.GetX();
+	int y = player.GetY();
+
+	return {x, y};
+}
+
+void Emscripten_Interface::SetLanguage(std::string lang) {
+	Player::translation.SelectLanguage(lang);
+}
+
+void Emscripten_Interface::SessionReady() {
+	auto& i = GMI();
+	if (i.connection.IsConnected())
+		i.connection.Close(); // if SessionReady is called, the websocket must already be closed
+	i.session_active = true;
+	if (i.room_id != -1)
+		i.Connect(i.room_id);
+}
+
+void Emscripten_Interface::TogglePlayerSounds() {
+	auto& f = Game_Multiplayer::Instance().settings.enable_sounds;
+	f = !f;
+	Web_API::ReceiveInputFeedback(1);
+}
+
+void Emscripten_Interface::ToggleMute() {
+	auto& f = Game_Multiplayer::Instance().settings.mute_audio;
+	f = !f;
+	Web_API::ReceiveInputFeedback(2);
+}
+
+void Emscripten_Interface::SetSoundVolume(int volume) {
+	Audio().SE_SetGlobalVolume(volume);
+}
+
+void Emscripten_Interface::SetMusicVolume(int volume) {
+	Audio().BGM_SetGlobalVolume(volume);
+}
+
+void Emscripten_Interface::SetNametagMode(int mode) {
+	Game_Multiplayer::Instance().SetNametagMode(mode);
+	Web_API::NametagModeUpdated(mode);
+}
+
+void Emscripten_Interface::SetSessionToken(std::string t) {
+	auto& i = Game_Multiplayer::Instance();
+	i.session_token.assign(t);
+}
+
 // Binding code
 EMSCRIPTEN_BINDINGS(player_interface) {
 	emscripten::class_<Emscripten_Interface>("api")
@@ -99,9 +159,24 @@ EMSCRIPTEN_BINDINGS(player_interface) {
 		.class_function("uploadSavegame", &Emscripten_Interface::UploadSavegame)
 		.class_function("refreshScene", &Emscripten_Interface::RefreshScene)
 		.class_function("takeScreenshot", &Emscripten_Interface::TakeScreenshot)
+
+		.class_function("getPlayerCoords", &Emscripten_Interface::GetPlayerCoords)
+		.class_function("setLanguage", &Emscripten_Interface::SetLanguage, emscripten::allow_raw_pointers())
+		.class_function("sessionReady", &Emscripten_Interface::SessionReady)
+		.class_function("togglePlayerSounds", &Emscripten_Interface::TogglePlayerSounds)
+		.class_function("toggleMute", &Emscripten_Interface::ToggleMute)
+		.class_function("setSoundVolume", &Emscripten_Interface::SetSoundVolume)
+		.class_function("setMusicVolume", &Emscripten_Interface::SetMusicVolume)
+		.class_function("setNametagMode", &Emscripten_Interface::SetNametagMode)
+		.class_function("setSessionToken", &Emscripten_Interface::SetSessionToken, emscripten::allow_raw_pointers())
 	;
 
 	emscripten::class_<Emscripten_Interface_Private>("api_private")
 		.class_function("uploadSavegameStep2", &Emscripten_Interface_Private::UploadSavegameStep2)
+	;
+
+	emscripten::value_array<std::array<int, 2>>("array_int_2")
+		.element(emscripten::index<0>())
+		.element(emscripten::index<1>())
 	;
 }
