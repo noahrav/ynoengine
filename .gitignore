@@ -148,4 +148,4 @@ eboot.bin
 *.jks
 
 #protection
-/src/multiplayer/yno_connection.cpp
+src/multiplayer/yno_connection.cpp
