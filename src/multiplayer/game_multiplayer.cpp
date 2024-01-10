@@ -316,6 +316,12 @@ void Game_Multiplayer::InitConnection() {
 		if (players.find(p.id) == players.end()) return;
 		repeating_flashes.erase(p.id);
 	});
+	connection.RegisterHandler<TransparencyPacket>("tr", [this] (TransparencyPacket& p) {
+		if (players.find(p.id) == players.end()) return;
+		auto& player = players[p.id];
+		int transparency = Utils::Clamp(p.transparency, 0, 7);
+		player.ch->SetTransparency(transparency);
+	});
 	connection.RegisterHandler<HiddenPacket>("h", [this] (HiddenPacket& p) {
 		if (players.find(p.id) == players.end()) return;
 		auto& player = players[p.id];
@@ -449,64 +455,7 @@ void Game_Multiplayer::InitConnection() {
 	});
 }
 
-//this will only be called from outside
-extern "C" {
 using namespace Messages::C2S;
-
-int* GetPlayerCoords() {
-		auto& player = *Main_Data::game_player;
-
-	int* coords = new int[2];
-	coords[0] = player.GetX();
-	coords[1] = player.GetY();
-
-	return coords;
-}
-
-void SetGameLanguage(const char* lang) {
-	Player::translation.SelectLanguage(lang);
-}
-
-void SessionReady() {
-	auto& i = GMI();
-	if (i.connection.IsConnected())
-		i.connection.Close(); // if SessionReady is called, the websocket must already be closed
-	i.session_active = true;
-	if (i.room_id != -1)
-		i.Connect(i.room_id);
-}
-
-void TogglePlayerSounds() {
-	auto& f = Game_Multiplayer::Instance().settings.enable_sounds;
-	f = !f;
-	Web_API::ReceiveInputFeedback(1);
-}
-
-void ToggleMute() {
-	auto& f = Game_Multiplayer::Instance().settings.mute_audio;
-	f = !f;
-	Web_API::ReceiveInputFeedback(2);
-}
-
-void SetSoundVolume(const int volume) {
-	Audio().SE_SetGlobalVolume(volume);
-}
-
-void SetMusicVolume(const int volume) {
-	Audio().BGM_SetGlobalVolume(volume);
-}
-
-void SetNametagMode(const int mode) {
-	Game_Multiplayer::Instance().SetNametagMode(mode);
-	Web_API::NametagModeUpdated(mode);
-}
-
-void SetSessionToken(const char* t) {
-	auto& i = Game_Multiplayer::Instance();
-	i.session_token.assign(t);
-}
-
-}
 
 void Game_Multiplayer::Connect(int map_id, bool room_switch) {
 	Output::Debug("MP: connecting to id={}", map_id);
@@ -529,6 +478,7 @@ void Game_Multiplayer::Connect(int map_id, bool room_switch) {
 		Web_API::UpdateConnectionStatus(2); // connecting
 		connection.Open(get_room_url(room_id, session_token));
 	}
+	UpdateGlobalVariables();
 }
 
 void Game_Multiplayer::Initialize() {
@@ -549,6 +499,7 @@ void Game_Multiplayer::Quit() {
 	Web_API::UpdateConnectionStatus(0); // disconnected
 	connection.Close();
 	Initialize();
+	UpdateGlobalVariables();
 }
 
 void Game_Multiplayer::SendBasicData() {
@@ -601,6 +552,10 @@ void Game_Multiplayer::MainPlayerFlashed(int r, int g, int b, int p, int f) {
 		last_frame_flash.reset();
 	}
 	last_flash_frame_index = frame_index;
+}
+
+void Game_Multiplayer::MainPlayerChangedTransparency(int transparency) {
+	connection.SendPacketAsync<TransparencyPacket>(transparency);
 }
 
 void Game_Multiplayer::MainPlayerChangedSpriteHidden(bool hidden) {
