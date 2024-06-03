@@ -443,9 +443,9 @@ void Game_Multiplayer::InitConnection() {
 	});
 	connection.RegisterHandler<CUTimePacket>("cut", [this] (CUTimePacket& p) {
 		const int raw_time = p.time;
-		if (raw_time > 0 && raw_time < CUTimeFormat.HOURS * CUTimeFormat.DAYS) {
-			cu_time_hours = raw_time % CUTimeFormat.HOURS;
-			cu_time_days = raw_time / CUTimeFormat.DAYS;
+		if (raw_time > 0 && (raw_time < CUTimeFormat::HOURS * CUTimeFormat::DAYS)) {
+			cu_time_hours = raw_time % CUTimeFormat::HOURS;
+			cu_time_days = raw_time / CUTimeFormat::DAYS;
 		} else {
             cu_time_hours = 0;
             cu_time_days = 0;

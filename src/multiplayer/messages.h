@@ -342,6 +342,14 @@ namespace S2C {
 	public:
 		BadgeUpdatePacket(const PL& v) {}
 	};
+
+	class CUTimePacket : public S2CPacket {
+	public:
+		CUTimePacket(const PL& v)
+			: time(stoi((std::string) v.at(0))) {}
+	
+		int time;
+	};
 }
 namespace C2S {
 	using C2SPacket = Multiplayer::C2SPacket;
@@ -571,16 +579,6 @@ namespace C2S {
 		int event_id;
 		int action_bin;
 	};
-
-	class CUTimePacket : public C2SPacker {
-	public:
-		SyncEventPacket(int _event_id, int _action_bin) : C2SPacket("cut"),
-			time(_time) {}
-		std::string ToBytes() const override { return Build(time); }
-	protected:
-		int _time;
-	};
-
 }
 }
 

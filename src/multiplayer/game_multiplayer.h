@@ -75,15 +75,15 @@ public:
 	};
 
 	enum GlobalVariables {
-		NB_PLAYERS = 1232
-		CU_HOURS = 1233
+		NB_PLAYERS = 1232,
+		CU_HOURS = 1233,
 		CU_DAYS = 1234
 	};
 
 	enum CUTimeFormat {
-		HOURS = 20
+		HOURS = 20,
 		DAYS = 12
-	}:
+	};
 
 	NametagMode GetNametagMode() { return nametag_mode; }
 	void SetNametagMode(int mode) {
