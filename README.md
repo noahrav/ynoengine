@@ -73,6 +73,7 @@ Follow these steps:
     - curl
     - pkg-config
     - ccache
+    - libinih
 
 2) Set up emscripten toolchain
 
