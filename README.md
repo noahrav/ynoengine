@@ -64,7 +64,7 @@ Follow these steps:
 
 1) Download required tools and dependencies for ynoclient.
     - cmake 3.10 or higher
-    - meson & ninja (You'll need python3-pip package to install meson build system)
+    - meson > 1.4.1 & ninja (You'll need python3-pip package to install meson build system)
     - automake
     - autoconf
     - libtool
@@ -114,6 +114,8 @@ twig33 - Original concept and implementation<br />
 maru - Project owner and lead developer<br />
 Flashfyre - Developer<br />
 aleck099 - Developer<br />
+lumiscosity - Developer<br />
+Noahrav - Developer<br />
 
 https://github.com/CataractJustice/ynoclient - References for tint, flash, and sound sync used for writing parts of our implementation
 ## License
