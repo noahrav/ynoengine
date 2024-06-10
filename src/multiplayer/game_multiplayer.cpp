@@ -12,6 +12,7 @@
 #include <lcf/reader_util.h>
 
 #include "game_multiplayer.h"
+#include "../game_config_game.h"
 #include "../output.h"
 #include "../game_player.h"
 #include "../game_playerother.h"
@@ -368,7 +369,11 @@ void Game_Multiplayer::InitConnection() {
 				ry = py - oy;
 			}
 
-			int dist = std::sqrt(rx * rx + ry * ry);
+			int dist = std::sqrt(rx * rx + ry * ry);	
+			if (hrs_set.find(p.snd.name) != hrs_set.end()) {
+				dist = std::max(0, dist - 7);
+			}
+
 			float dist_volume = 75.0f - ((float)dist * 10.0f);
 			float sound_volume_multiplier = float(p.snd.volume) / 100.0f;
 			int real_volume = std::max((int)(dist_volume * sound_volume_multiplier), 0);
